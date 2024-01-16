@@ -11,6 +11,10 @@ type Bot struct {
 	db      *Mongo.Db
 }
 
+func (bot Bot) Db() *Mongo.Db {
+	return bot.db
+}
+
 func BuildBot(discordBotSecretToken string, db *Mongo.Db) *Bot {
 	if session, err := dgo.New(discordBotSecretToken); err == nil {
 		var bot = &Bot{

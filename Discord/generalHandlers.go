@@ -29,9 +29,13 @@ func GetGeneralHandlers() *map[string]BotCommand {
 					uid = i.Member.User.ID // Server
 				}
 
-				options, size := i.ApplicationCommandData().Options, len(i.ApplicationCommandData().Options)
-				if size > 0 {
-					msg = options[0].StringValue()
+				optionMap := map[string]*dgo.ApplicationCommandInteractionDataOption{}
+				for _, option := range i.ApplicationCommandData().Options {
+					optionMap[option.Name] = option
+				}
+
+				if option := optionMap["message"]; option != nil {
+					msg = option.StringValue()
 				}
 
 				if err := s.InteractionRespond(i.Interaction, &dgo.InteractionResponse{
