@@ -18,7 +18,7 @@ func BuildBot(discordBotSecretToken string, db *Mongo.Db) *Bot {
 			db:      db,
 		}
 
-		for _, handler := range *BotHandlers(*bot) {
+		for _, handler := range *GetBotHandlers(*bot) {
 			session.AddHandler(handler)
 		}
 
