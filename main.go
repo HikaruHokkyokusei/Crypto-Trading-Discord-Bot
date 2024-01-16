@@ -4,7 +4,6 @@ import (
 	"Crypto-Trading-Discord-Bot/Discord"
 	"Crypto-Trading-Discord-Bot/Mongo"
 	"Crypto-Trading-Discord-Bot/utils"
-	"context"
 	"log"
 	"os"
 	"os/signal"
@@ -41,10 +40,8 @@ func init() {
 }
 
 func main() {
-	ctx := context.TODO()
-
-	mongoClient := Mongo.Connect(mongoUsername, mongoPassword, mongoClusterHost, ctx)
-	defer mongoClient.Disconnect(ctx)
+	mongoClient := Mongo.Connect(mongoUsername, mongoPassword, mongoClusterHost)
+	defer mongoClient.Disconnect()
 
 	discordBot := Discord.BuildBot("Bot "+discordBotSecretToken, mongoClient.GetDB("Go-Discord-Crypto-Trading-Bot"))
 	discordBot.StartSession()
