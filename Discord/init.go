@@ -39,9 +39,9 @@ func (bot Bot) StartSession() {
 		log.Fatal("DiscordInit StartSession: Unable to open session")
 	}
 
-	for _, botCommand := range BotCommands {
-		if _, err := bot.session.ApplicationCommandCreate(bot.session.State.User.ID, "", botCommand.info); err != nil {
-			log.Println("DiscordInit BuildBot: Error when creating command:", botCommand.info.Name, "Error:", err)
+	for _, botCommand := range GetBotCommands() {
+		if _, err := bot.session.ApplicationCommandCreate(bot.session.State.User.ID, "", botCommand.Info); err != nil {
+			log.Println("DiscordInit BuildBot: Error when creating command:", botCommand.Info.Name, "Error:", err)
 		}
 	}
 }
