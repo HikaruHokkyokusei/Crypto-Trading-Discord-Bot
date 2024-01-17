@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-func GetGeneralHandlers() *map[string]BotCommand {
+func getGeneralHandlers() *map[string]BotCommand {
 	return &map[string]BotCommand{
 		"echo": {
 			Info: &dgo.ApplicationCommand{
@@ -44,7 +44,7 @@ func GetGeneralHandlers() *map[string]BotCommand {
 						Content: uid + " : " + msg,
 					},
 				}); err != nil {
-					log.Println("DiscordGeneralHandlers GetGeneralHandlers: Error when interacting with input.", err)
+					log.Println("DiscordGeneralHandlers getGeneralHandlers: Error when interacting with input.", err)
 				}
 			},
 		},
@@ -81,14 +81,14 @@ func GetGeneralHandlers() *map[string]BotCommand {
 						},
 					},
 				}); err != nil {
-					log.Println("DiscordGeneralHandlers GetGeneralHandlers: Error when responding to application command", err)
+					log.Println("DiscordGeneralHandlers getGeneralHandlers: Error when responding to application command", err)
 				}
 			},
 		},
 	}
 }
 
-func GetGeneralComponentHandlers() *map[string]func(bot *Bot, s *dgo.Session, i *dgo.InteractionCreate) {
+func getGeneralComponentHandlers() *map[string]func(bot *Bot, s *dgo.Session, i *dgo.InteractionCreate) {
 	return &map[string]func(bot *Bot, s *dgo.Session, i *dgo.InteractionCreate){
 		"like-yes": func(bot *Bot, s *dgo.Session, i *dgo.InteractionCreate) {
 			if err := s.InteractionRespond(i.Interaction, &dgo.InteractionResponse{
@@ -98,13 +98,9 @@ func GetGeneralComponentHandlers() *map[string]func(bot *Bot, s *dgo.Session, i 
 					Flags:   dgo.MessageFlagsEphemeral,
 				},
 			}); err != nil {
-				log.Println("DiscordGeneralHandlers GetGeneralComponentHandlers: Error when responding to component interaction", err)
+				log.Println("DiscordGeneralHandlers getGeneralComponentHandlers: Error when responding to component interaction", err)
 				return
 			}
-
-			//if err := s.ChannelMessageDelete(i.ChannelID, i.Message.ID); err != nil {
-			//	log.Println("DiscordGeneralHandlers GetGeneralComponentHandlers: Error when deleting message", err)
-			//}
 		},
 		"like-no": func(bot *Bot, s *dgo.Session, i *dgo.InteractionCreate) {
 			if err := s.InteractionRespond(i.Interaction, &dgo.InteractionResponse{
@@ -114,12 +110,12 @@ func GetGeneralComponentHandlers() *map[string]func(bot *Bot, s *dgo.Session, i 
 					Flags:   dgo.MessageFlagsEphemeral,
 				},
 			}); err != nil {
-				log.Println("DiscordGeneralHandlers GetGeneralComponentHandlers: Error when responding to component interaction", err)
+				log.Println("DiscordGeneralHandlers getGeneralComponentHandlers: Error when responding to component interaction", err)
 				return
 			}
 
 			if err := s.ChannelMessageDelete(i.Interaction.ChannelID, i.Interaction.Message.ID); err != nil {
-				log.Println("DiscordGeneralHandlers GetGeneralComponentHandlers: Error when deleting message", err)
+				log.Println("DiscordGeneralHandlers getGeneralComponentHandlers: Error when deleting message", err)
 			}
 		},
 	}

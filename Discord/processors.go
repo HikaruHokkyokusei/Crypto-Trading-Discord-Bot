@@ -17,21 +17,27 @@ var (
 )
 
 func gatherCommandsAndHandlers(bot *Bot) {
-	for name, botCommand := range *GetGeneralHandlers() {
+	for name, botCommand := range *getGeneralHandlers() {
 		botCommands[name] = botCommand
 	}
-	for name, handler := range *GetGeneralComponentHandlers() {
+	for name, handler := range *getGeneralComponentHandlers() {
 		componentHandlers[name] = handler
 	}
-	for name, botCommand := range *GetOwnerHandlers() {
+	for name, botCommand := range *getOwnerHandlers() {
 		botCommands[name] = botCommand
 	}
-	for name, handler := range *GetOwnerComponentHandlers() {
+	for name, handler := range *getOwnerComponentHandlers() {
+		componentHandlers[name] = handler
+	}
+	for name, botCommand := range *getRegistrationHandlers() {
+		botCommands[name] = botCommand
+	}
+	for name, handler := range *getRegistrationComponentHandlers() {
 		componentHandlers[name] = handler
 	}
 }
 
-func GetBotCommandsAndHandlers(bot *Bot) (*map[string]BotCommand, *[]interface{}) {
+func getBotCommandsAndHandlers(bot *Bot) (*map[string]BotCommand, *[]interface{}) {
 	gatherCommandsAndHandlers(bot)
 	return &botCommands, &[]interface{}{
 		func(s *dgo.Session, r *dgo.Ready) {
@@ -40,7 +46,7 @@ func GetBotCommandsAndHandlers(bot *Bot) (*map[string]BotCommand, *[]interface{}
 		func(s *dgo.Session, m *dgo.MessageCreate) {
 			if m.Author.ID != s.State.User.ID {
 				if _, err := s.ChannelMessageSend(m.ChannelID, m.Author.ID+" : "+m.Content); err != nil {
-					log.Println("DiscordProcessors BotHandlers: Error when sending message:", err)
+					log.Println("DiscordProcessors getBotCommandsAndHandlers: Error when sending message:", err)
 				}
 			}
 		},
@@ -53,7 +59,7 @@ func GetBotCommandsAndHandlers(bot *Bot) (*map[string]BotCommand, *[]interface{}
 				if ok {
 					handler = botCommand.Handler
 				} else {
-					log.Println("DiscordProcessors BotHandlers: No handler for interaction command", i.ApplicationCommandData().Name)
+					log.Println("DiscordProcessors getBotCommandsAndHandlers: No handler for interaction command", i.ApplicationCommandData().Name)
 					return
 				}
 			case dgo.InteractionMessageComponent:
@@ -61,7 +67,7 @@ func GetBotCommandsAndHandlers(bot *Bot) (*map[string]BotCommand, *[]interface{}
 				if ok {
 					handler = fun
 				} else {
-					log.Println("DiscordProcessors BotHandlers: No handler for message command", i.MessageComponentData().CustomID)
+					log.Println("DiscordProcessors getBotCommandsAndHandlers: No handler for message command", i.MessageComponentData().CustomID)
 					return
 				}
 			}

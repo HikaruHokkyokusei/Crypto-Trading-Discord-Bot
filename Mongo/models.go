@@ -5,9 +5,10 @@ import (
 )
 
 type RootDocument struct {
-	ID      primitive.ObjectID `bson:"_id,omitempty"`
-	Id      string             `bson:"id,omitempty"`
-	OwnerId string             `bson:"ownerId,omitempty"`
+	ID               primitive.ObjectID `bson:"_id,omitempty"`
+	Id               string             `bson:"id,omitempty"`
+	OwnerId          string             `bson:"ownerId,omitempty"`
+	MaxRegistrations int64              `bson:"maxRegistrations,omitempty"`
 }
 
 type RegisteredUser struct {

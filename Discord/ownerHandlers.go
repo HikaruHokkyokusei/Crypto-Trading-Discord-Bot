@@ -6,7 +6,7 @@ import (
 	"log"
 )
 
-func GetOwnerHandlers() *map[string]BotCommand {
+func getOwnerHandlers() *map[string]BotCommand {
 	return &map[string]BotCommand{
 		"delete-command": {
 			Info: &dgo.ApplicationCommand{
@@ -76,13 +76,13 @@ func GetOwnerHandlers() *map[string]BotCommand {
 						Content: msg,
 					},
 				}); err != nil {
-					log.Println("DiscordOwnerHandlers GetOwnerHandlers: Error when interacting with input.", err)
+					log.Println("DiscordOwnerHandlers getOwnerHandlers: Error when interacting with input.", err)
 				}
 			},
 		},
 	}
 }
 
-func GetOwnerComponentHandlers() *map[string]func(bot *Bot, s *dgo.Session, i *dgo.InteractionCreate) {
+func getOwnerComponentHandlers() *map[string]func(bot *Bot, s *dgo.Session, i *dgo.InteractionCreate) {
 	return &map[string]func(bot *Bot, s *dgo.Session, i *dgo.InteractionCreate){}
 }

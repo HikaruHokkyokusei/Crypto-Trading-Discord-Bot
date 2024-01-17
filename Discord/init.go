@@ -2,41 +2,19 @@ package Discord
 
 import (
 	"Crypto-Trading-Discord-Bot/Mongo"
-	"context"
 	dgo "github.com/bwmarrin/discordgo"
 	"log"
 )
 
-type Bot struct {
-	ownerId            string
-	session            *dgo.Session
-	db                 *Mongo.Db
-	botCommands        *map[string]BotCommand
-	registeredCommands []*dgo.ApplicationCommand
-}
-
-func (bot Bot) OwnerId() string {
-	return bot.ownerId
-}
-
-func (bot Bot) Db() *Mongo.Db {
-	return bot.db
-}
-
 func BuildBot(discordBotSecretToken string, db *Mongo.Db) *Bot {
 	if session, err := dgo.New(discordBotSecretToken); err == nil {
-		var rootDocument Mongo.RootDocument
-		if err := db.GetCollection("_ROOT").C.FindOne(context.TODO(), Mongo.RootDocument{Id: "0"}).Decode(&rootDocument); err != nil {
-			log.Fatal("DiscordInit BuildSession: Unable to obtain root document", err)
-		}
-
 		var bot = &Bot{
-			ownerId: rootDocument.OwnerId,
 			session: session,
 			db:      db,
 		}
+		bot.loadDatabase()
 
-		cmdMap, handlers := GetBotCommandsAndHandlers(bot)
+		cmdMap, handlers := getBotCommandsAndHandlers(bot)
 		bot.botCommands = cmdMap
 
 		for _, handler := range *handlers {
