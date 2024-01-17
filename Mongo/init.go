@@ -24,7 +24,7 @@ func (client Client) GetDB(name string) *Db {
 
 func (db Db) GetCollection(name string) *Collection {
 	return &Collection{
-		collection: db.db.Collection(name),
+		C: db.db.Collection(name),
 	}
 }
 

@@ -26,7 +26,7 @@ func (bot Bot) Db() *Mongo.Db {
 func BuildBot(discordBotSecretToken string, db *Mongo.Db) *Bot {
 	if session, err := dgo.New(discordBotSecretToken); err == nil {
 		var rootDocument Mongo.RootDocument
-		if err := db.GetCollection("_ROOT").C().FindOne(context.TODO(), Mongo.RootDocument{Id: "0"}).Decode(&rootDocument); err != nil {
+		if err := db.GetCollection("_ROOT").C.FindOne(context.TODO(), Mongo.RootDocument{Id: "0"}).Decode(&rootDocument); err != nil {
 			log.Fatal("DiscordInit BuildSession: Unable to obtain root document", err)
 		}
 
@@ -64,7 +64,7 @@ func (bot Bot) StartSession() {
 	bot.registeredCommands = make([]*dgo.ApplicationCommand, len(*bot.botCommands))
 	for _, botCommand := range *bot.botCommands {
 		if registeredCommand, err := bot.session.ApplicationCommandCreate(bot.session.State.User.ID, botCommand.GuildId, botCommand.Info); err != nil {
-			log.Fatal("DiscordInit BuildBot: Error when creating command:", botCommand.Info.Name, "Error:", err)
+			log.Fatal("DiscordInit BuildBot: Error when creating command: ", botCommand.Info.Name, " Error: ", err)
 		} else {
 			bot.registeredCommands[count] = registeredCommand
 			count += 1

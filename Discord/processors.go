@@ -16,17 +16,23 @@ var (
 	componentHandlers = map[string]func(bot *Bot, s *dgo.Session, i *dgo.InteractionCreate){}
 )
 
-func gatherCommandsAndHandlers() {
+func gatherCommandsAndHandlers(bot *Bot) {
 	for name, botCommand := range *GetGeneralHandlers() {
 		botCommands[name] = botCommand
 	}
 	for name, handler := range *GetGeneralComponentHandlers() {
 		componentHandlers[name] = handler
 	}
+	for name, botCommand := range *GetOwnerHandlers() {
+		botCommands[name] = botCommand
+	}
+	for name, handler := range *GetOwnerComponentHandlers() {
+		componentHandlers[name] = handler
+	}
 }
 
 func GetBotCommandsAndHandlers(bot *Bot) (*map[string]BotCommand, *[]interface{}) {
-	gatherCommandsAndHandlers()
+	gatherCommandsAndHandlers(bot)
 	return &botCommands, &[]interface{}{
 		func(s *dgo.Session, r *dgo.Ready) {
 			log.Println("DiscordInit StartSession: Session Started. Logged in as: `" + s.State.User.Username + "#" + s.State.User.Discriminator + "`")
