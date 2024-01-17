@@ -8,6 +8,7 @@ import (
 type BotCommand struct {
 	Info    *dgo.ApplicationCommand
 	Handler func(bot *Bot, s *dgo.Session, i *dgo.InteractionCreate)
+	GuildId string
 }
 
 var (
@@ -15,7 +16,7 @@ var (
 	componentHandlers = map[string]func(bot *Bot, s *dgo.Session, i *dgo.InteractionCreate){}
 )
 
-func gatherHandlers() {
+func gatherCommandsAndHandlers() {
 	for name, botCommand := range *GetGeneralHandlers() {
 		botCommands[name] = botCommand
 	}
@@ -24,13 +25,9 @@ func gatherHandlers() {
 	}
 }
 
-func GetBotCommands() map[string]BotCommand {
-	return botCommands
-}
-
-func GetBotHandlers(bot Bot) *[]interface{} {
-	gatherHandlers()
-	return &[]interface{}{
+func GetBotCommandsAndHandlers(bot *Bot) (*map[string]BotCommand, *[]interface{}) {
+	gatherCommandsAndHandlers()
+	return &botCommands, &[]interface{}{
 		func(s *dgo.Session, r *dgo.Ready) {
 			log.Println("DiscordInit StartSession: Session Started. Logged in as: `" + s.State.User.Username + "#" + s.State.User.Discriminator + "`")
 		},
@@ -63,7 +60,7 @@ func GetBotHandlers(bot Bot) *[]interface{} {
 				}
 			}
 
-			handler(&bot, s, i)
+			handler(bot, s, i)
 		},
 	}
 }
