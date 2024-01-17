@@ -1,6 +1,7 @@
 package Discord
 
 import (
+	"Crypto-Trading-Discord-Bot/utils"
 	dgo "github.com/bwmarrin/discordgo"
 	"log"
 )
@@ -21,19 +22,9 @@ func getGeneralHandlers() *map[string]BotCommand {
 				},
 			},
 			Handler: func(bot *Bot, s *dgo.Session, i *dgo.InteractionCreate) {
-				var uid, msg string
+				user, optionMap := utils.GetUserAndOptionMap(i)
 
-				if i.User != nil {
-					uid = i.User.ID // DM
-				} else {
-					uid = i.Member.User.ID // Server
-				}
-
-				optionMap := map[string]*dgo.ApplicationCommandInteractionDataOption{}
-				for _, option := range i.ApplicationCommandData().Options {
-					optionMap[option.Name] = option
-				}
-
+				var msg string
 				if option := optionMap["message"]; option != nil {
 					msg = option.StringValue()
 				}
@@ -41,7 +32,7 @@ func getGeneralHandlers() *map[string]BotCommand {
 				if err := s.InteractionRespond(i.Interaction, &dgo.InteractionResponse{
 					Type: dgo.InteractionResponseChannelMessageWithSource,
 					Data: &dgo.InteractionResponseData{
-						Content: uid + " : " + msg,
+						Content: user.ID + " : " + msg,
 					},
 				}); err != nil {
 					log.Println("DiscordGeneralHandlers getGeneralHandlers: Error when interacting with input.", err)

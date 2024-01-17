@@ -31,7 +31,7 @@ func BuildBot(discordBotSecretToken string, db *Mongo.Db) *Bot {
 	}
 }
 
-func (bot Bot) StartSession() {
+func (bot *Bot) StartSession() {
 	log.Println("DiscordInit StartSession: Opening session")
 	err := bot.session.Open()
 	if err != nil {
@@ -50,7 +50,7 @@ func (bot Bot) StartSession() {
 	}
 }
 
-func (bot Bot) EndSession() {
+func (bot *Bot) EndSession() {
 	for _, registeredCommand := range bot.registeredCommands {
 		if registeredCommand != nil {
 			if err := bot.session.ApplicationCommandDelete(bot.session.State.User.ID, "", registeredCommand.ID); err != nil {

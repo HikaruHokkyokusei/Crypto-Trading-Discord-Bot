@@ -1,8 +1,7 @@
 package Discord
 
 import (
-	"Crypto-Trading-Discord-Bot/Mongo"
-	"context"
+	"Crypto-Trading-Discord-Bot/utils"
 	dgo "github.com/bwmarrin/discordgo"
 	"log"
 )
@@ -23,17 +22,7 @@ func getRegistrationHandlers() *map[string]BotCommand {
 				},
 			},
 			Handler: func(bot *Bot, s *dgo.Session, i *dgo.InteractionCreate) {
-				var user *dgo.User
-				if i.User != nil {
-					user = i.User // DM
-				} else {
-					user = i.Member.User // Server
-				}
-
-				optionMap := map[string]*dgo.ApplicationCommandInteractionDataOption{}
-				for _, option := range i.ApplicationCommandData().Options {
-					optionMap[option.Name] = option
-				}
+				user, optionMap := utils.GetUserAndOptionMap(i)
 
 				var nickName string
 				if option := optionMap["nick-name"]; option != nil {
@@ -42,11 +31,7 @@ func getRegistrationHandlers() *map[string]BotCommand {
 					nickName = user.Username
 				}
 
-				res := bot.Db().GetCollection("RegisteredUsers").UpsertOne(
-					context.TODO(),
-					Mongo.RegisteredUser{UId: user.ID},
-					Mongo.RegisteredUser{UId: user.ID, NickName: nickName},
-				)
+				res := bot.registerUser(user.ID, nickName)
 
 				var msg string
 				if res.Success {

@@ -1,6 +1,7 @@
 package Discord
 
 import (
+	"Crypto-Trading-Discord-Bot/utils"
 	"fmt"
 	dgo "github.com/bwmarrin/discordgo"
 	"log"
@@ -28,16 +29,10 @@ func getOwnerHandlers() *map[string]BotCommand {
 				},
 			},
 			Handler: func(bot *Bot, s *dgo.Session, i *dgo.InteractionCreate) {
-				var user *dgo.User
+				user, _ := utils.GetUserAndOptionMap(i)
 				var msg string
 
-				if i.User != nil {
-					user = i.User // DM
-				} else {
-					user = i.Member.User // Server
-				}
-
-				if user.ID == bot.OwnerId() {
+				if user.ID == bot.ownerId {
 					optionMap := map[string]*dgo.ApplicationCommandInteractionDataOption{}
 					for _, option := range i.ApplicationCommandData().Options {
 						optionMap[option.Name] = option

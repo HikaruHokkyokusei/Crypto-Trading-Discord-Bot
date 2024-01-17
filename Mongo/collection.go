@@ -12,10 +12,10 @@ type Collection struct {
 }
 
 type UpsertOneResult struct {
-	Success     bool
-	WasInserted bool
-	WasUpdated  bool
 	Error       error
+	Success     bool
+	WasUpdated  bool
+	WasInserted bool
 }
 
 func (c Collection) UpsertOne(ctx context.Context, filter any, updated any) *UpsertOneResult {
